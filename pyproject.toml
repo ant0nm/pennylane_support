@@ -71,3 +71,7 @@ line-ending = "auto"
 
 [tool.poe.tasks]
 test = "pytest"
+lint = "ruff check ."
+format = "ruff format ."
+typecheck = "mypy src/"
+typecheck_strict = "mypy src/ --strict"
