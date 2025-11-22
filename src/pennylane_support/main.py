@@ -40,5 +40,5 @@ def root():
 
 @app.get("/test_db_connection/")
 def test_db_connection(session: Session = Depends(get_session)):
-    result = session.exec(text("SELECT version()")).first()
-    return {"pg_version": str(result[0])}
+    result = session.exec(text("SELECT pg_sleep(5), version()")).first()
+    return {"pg_version": str(result[1])}
