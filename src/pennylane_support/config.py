@@ -17,6 +17,13 @@ class Settings(BaseSettings):
     postgres_host: Optional[str] = None
     postgres_port: Optional[int] = None
 
+    @property
+    def db_connection_url(self) -> str:
+        return (
+            f"postgresql://{self.postgres_user}:{self.postgres_password}"
+            f"@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
+        )
+
 
 @lru_cache
 def get_settings():

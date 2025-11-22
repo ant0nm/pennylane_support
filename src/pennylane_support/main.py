@@ -14,4 +14,9 @@ app = FastAPI(
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World", "settings": get_settings()}
+    current_settings = get_settings()
+    return {
+        "message": "Hello World",
+        "settings": current_settings,
+        "pg_connection_uri": current_settings.db_connection_url,
+    }
