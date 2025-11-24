@@ -32,7 +32,7 @@ class Difficulty(str, Enum):
 class User(SQLModel, table=True):
     __tablename__ = "users"
     id: Optional[int] = Field(primary_key=True, default=None)
-    name: str
+    name: str = Field(unique=True)
     is_admin: bool = Field(
         default=False, sa_column=Column(BOOLEAN, server_default="false", nullable=False)
     )
