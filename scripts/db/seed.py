@@ -29,7 +29,8 @@ def seed():
             users_map[username] = existing.id
             print(f"  User {username} already exists")
         else:
-            user = User(name=username, is_admin=False)
+            is_admin = username in PENNYLANE_SUPPORT_ADMINS
+            user = User(name=username, is_admin=is_admin)
             session.add(user)
             session.flush()
             users_map[username] = user.id

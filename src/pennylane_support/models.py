@@ -122,3 +122,22 @@ class CodingChallengeResponse(BaseModel):
     tags: List[str]
     learning_objectives: List[str]
     hints: List[str]
+
+
+class PostResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    user_id: int
+    timestamp: datetime
+    content: str
+
+
+class SupportConversationResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    topic: str
+    category: str
+    coding_challenge_id: str
+    posts: List[PostResponse]

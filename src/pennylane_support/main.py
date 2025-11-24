@@ -5,7 +5,7 @@ from .database import get_session, engine
 from sqlmodel import Session, text
 from alembic.config import Config
 from alembic import command
-from .routers import challenges
+from .routers import challenges, conversations
 
 
 @asynccontextmanager
@@ -38,3 +38,4 @@ app = FastAPI(
 )
 
 app.include_router(challenges.router)
+app.include_router(conversations.router)
