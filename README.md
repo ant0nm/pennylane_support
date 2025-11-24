@@ -12,7 +12,7 @@ This API was built to power PennyLane Support - a community-driven support conve
 
 ## Quick Overview
 
-FastAPI + SQLModel + PostgreSQL + Docker
+FastAPI + SQLModel + Alembic + PostgreSQL + Docker
 
 ALL users can...
 
