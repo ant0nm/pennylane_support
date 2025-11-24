@@ -1,15 +1,23 @@
 from fastapi import FastAPI, Depends
 from .config import get_settings
-from contextlib import contextmanager
+from contextlib import asynccontextmanager
 from .database import get_session, engine
 from sqlmodel import Session, text
+from alembic.config import Config
+from alembic import command
 
 
-@contextmanager
-def lifespan(app: FastAPI):
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     # Startup
-    # cfg = Config("alembic.ini")
-    # command.upgrade(cfg, "head")
+    try:
+        print("Running migrations...")
+        cfg = Config("alembic.ini")
+        command.upgrade(cfg, "head")
+        print("Ran migrations successfully!")
+    except Exception as e:
+        print(f"Migration failed: {e}")
+        raise
 
     yield
 
@@ -25,6 +33,7 @@ app = FastAPI(
         "API that powers PennyLane Support, a community-driven support conversations platform for "
         "PennyLane quantum computing challenges."
     ),
+    lifespan=lifespan,
 )
 
 
