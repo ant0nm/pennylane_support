@@ -1,13 +1,10 @@
 """init_schema
 
-Revision ID: ef810250b7b5
+Revision ID: 291872f75272
 Revises:
-Create Date: 2025-11-23 19:02:11.341507
+Create Date: 2025-11-23 21:15:09.393713
 
 """
-
-# Auto-generated with `alembic revision --autogenerate -m "init_schema"` with a few
-# minor changes.
 
 from typing import Sequence, Union
 
@@ -17,7 +14,7 @@ from sqlalchemy.dialects import postgresql
 import sqlmodel
 
 # revision identifiers, used by Alembic.
-revision: str = "ef810250b7b5"
+revision: str = "291872f75272"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -99,19 +96,24 @@ def upgrade() -> None:
             server_default=sa.text("now()"),
             nullable=False,
         ),
+        sa.Column("content", sqlmodel.sql.sqltypes.AutoString(), nullable=False),
+        sa.Column("user_id", sa.Integer(), nullable=False),
         sa.Column("support_conversation_id", sqlmodel.sql.sqltypes.AutoString(), nullable=False),
         sa.ForeignKeyConstraint(
             ["support_conversation_id"], ["support_conversations.id"], ondelete="CASCADE"
         ),
+        sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
         op.f("ix_posts_support_conversation_id"), "posts", ["support_conversation_id"], unique=False
     )
+    op.create_index(op.f("ix_posts_user_id"), "posts", ["user_id"], unique=False)
 
 
 def downgrade() -> None:
     """Downgrade schema."""
+    op.drop_index(op.f("ix_posts_user_id"), table_name="posts")
     op.drop_index(op.f("ix_posts_support_conversation_id"), table_name="posts")
     op.drop_table("posts")
     op.drop_index(
