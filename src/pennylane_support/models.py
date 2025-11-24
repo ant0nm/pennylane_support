@@ -20,6 +20,9 @@ def utcnow():
     return datetime.now(timezone.utc)
 
 
+# Models
+# For the sake of consistency (C) in ACID, the data models include
+# a lot of DB validations and constraints.
 class Difficulty(str, Enum):
     BEGINNER = "Beginner"
     INTERMEDIATE = "Intermediate"
@@ -33,6 +36,7 @@ class User(SQLModel, table=True):
     is_admin: bool = Field(
         default=False, sa_column=Column(BOOLEAN, server_default="false", nullable=False)
     )
+    posts: List["Post"] = Relationship(back_populates="user", cascade_delete=True)
 
 
 class CodingChallenge(SQLModel, table=True):
@@ -95,6 +99,9 @@ class Post(SQLModel, table=True):
         default_factory=utcnow,
         sa_column=Column(TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=False),
     )
+    content: str = Field(nullable=False)
+    user_id: int = Field(foreign_key="users.id", index=True, nullable=False, ondelete="CASCADE")
+    user: User = Relationship(back_populates="posts")
     support_conversation_id: str = Field(
         foreign_key="support_conversations.id", index=True, nullable=False, ondelete="CASCADE"
     )
