@@ -12,6 +12,7 @@ from sqlalchemy.dialects.postgresql import (
 from typing import Optional, List
 from enum import Enum
 import sqlalchemy as sa
+from pydantic import BaseModel, ConfigDict
 
 
 # Utils
@@ -20,7 +21,7 @@ def utcnow():
     return datetime.now(timezone.utc)
 
 
-# Models
+# DB Models
 # For the sake of consistency (C) in ACID, the data models include
 # a lot of DB validations and constraints.
 class Difficulty(str, Enum):
@@ -106,3 +107,18 @@ class Post(SQLModel, table=True):
         foreign_key="support_conversations.id", index=True, nullable=False, ondelete="CASCADE"
     )
     support_conversation: SupportConversation = Relationship(back_populates="posts")
+
+
+# API Models
+class CodingChallengeResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    title: str
+    description: str
+    category: str
+    difficulty: str
+    points: int
+    tags: List[str]
+    learning_objectives: List[str]
+    hints: List[str]
