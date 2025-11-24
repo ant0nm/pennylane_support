@@ -6,7 +6,7 @@ This API was built to power PennyLane Support - a community-driven support conve
 
 ## Prerequisites
 
-* Python 3.12+
+* Python 3.14+
 * PostgreSQL 17
 * Docker
 
