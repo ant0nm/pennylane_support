@@ -89,13 +89,19 @@ poetry install
 poe pg_dev_start
 ```
 
-8. Seed the DB
+8. Run the migrations
+
+```
+alembic upgrade head
+```
+
+9. Seed the DB
 
 ```
 poe seed_db
 ```
 
-9. Start the development server
+10. Start the development server
 
 ```
 poe server_dev_start
