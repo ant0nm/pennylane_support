@@ -83,25 +83,30 @@ cd pennylane_support
 poetry install
 ```
 
-7. Spin up the DB
+7. Activate the venv.
+```bash
+eval $(poetry env activate)
+```
+
+8. Spin up the DB
 
 ```
 poe pg_dev_start
 ```
 
-8. Run the migrations
+9. Run the migrations
 
 ```
 alembic upgrade head
 ```
 
-9. Seed the DB
+10. Seed the DB
 
 ```
 poe seed_db
 ```
 
-10. Start the development server
+11. Start the development server
 
 ```
 poe server_dev_start
