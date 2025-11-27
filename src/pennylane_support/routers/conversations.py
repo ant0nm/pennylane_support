@@ -76,7 +76,12 @@ def create_post(
     if not conversation:
         raise HTTPException(status_code=404, detail="Conversation not found")
 
-    post = Post(content=data["content"], user_id=user.id, support_conversation_id=conversation_id)
+    if not data.get("content"):
+        raise HTTPException(status_code=400, detail="Post content can't be empty")
+
+    post = Post(
+        content=data.get("content"), user_id=user.id, support_conversation_id=conversation_id
+    )
     session.add(post)
     session.commit()
     session.refresh(post)
@@ -84,8 +89,8 @@ def create_post(
 
 
 # Admin endpoints
-@router.get("/", response_model=List[SupportConversationResponse])
-def list_conversations(
+@router.get("/", response_model=List[SupportConversationResponse], tags=["admin"])
+def list_all_conversations(
     username: str,
     session: Session = Depends(get_session),
     challenge_id: str = None,
@@ -105,7 +110,7 @@ def list_conversations(
     return session.exec(query.limit(limit).offset(offset)).all()
 
 
-@router.patch("/{conversation_id}/", response_model=SupportConversationResponse)
+@router.patch("/{conversation_id}/", response_model=SupportConversationResponse, tags=["admin"])
 def update_conversation(
     conversation_id: str, data: dict, username: str, session: Session = Depends(get_session)
 ):
@@ -116,9 +121,16 @@ def update_conversation(
     if not conversation:
         raise HTTPException(status_code=404, detail="Conversation not found")
 
+    invalid_attrs = []
     for key, value in data.items():
-        if hasattr(conversation, key) and key != "id":
-            setattr(conversation, key, value)
+        if hasattr(conversation, key):
+            if key != "id":
+                setattr(conversation, key, value)
+        else:
+            invalid_attrs.append(key)
+
+    if invalid_attrs:
+        raise HTTPException(status_code=400, detail=f"Invalid attrs provided: {invalid_attrs}")
 
     session.add(conversation)
     session.commit()
@@ -126,7 +138,7 @@ def update_conversation(
     return conversation
 
 
-@router.delete("/{conversation_id}/")
+@router.delete("/{conversation_id}/", tags=["admin"])
 def delete_conversation(
     conversation_id: str, username: str, session: Session = Depends(get_session)
 ):
